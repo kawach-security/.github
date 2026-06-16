@@ -107,12 +107,19 @@ and the WAF/rate-limit rules (a hot-reloaded ConfigMap) are all configurable.
 
 ## Repositories
 
+Start at the umbrella repo — it aggregates everything as submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/kawach-security/kawach.git
+```
+
 | Repo | Description |
 |---|---|
+| [`kawach`](https://github.com/kawach-security/kawach) | **Umbrella** — all components as submodules (one clone) |
 | [`kawach-dataplane`](https://github.com/kawach-security/kawach-dataplane) | Pingora-based WAF + Shield engine (the hot path) |
 | [`kawach-control`](https://github.com/kawach-security/kawach-control) | Control-plane API + React dashboard |
 | [`kawach-proto`](https://github.com/kawach-security/kawach-proto) | Shared contracts: ACL schema, config-sync envelope, telemetry events |
-| [`kawach-infra`](https://github.com/kawach-security/kawach-infra) | Kubernetes / Terraform / eBPF build toolchain |
+| [`kawach-infra`](https://github.com/kawach-security/kawach-infra) | Docker images + configurable Helm chart for Kubernetes |
 
 ---
 
