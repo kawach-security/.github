@@ -62,6 +62,37 @@ Rule sets are authored in the control plane, published over a Pub/Sub bus, compi
 
 ---
 
+## Running the application
+
+**Prerequisites:** Rust (stable) + `cmake`, and Node.js 20+.
+
+**Data plane** — the WAF + Shield gateway:
+
+```bash
+git clone https://github.com/kawach-security/kawach-dataplane && cd kawach-dataplane
+cargo run                       # listens on 0.0.0.0:8080, loads ./acls.json
+
+# Try it (ACL bound to *.acme.com in the sample config):
+curl -i -H 'Host: app.acme.com' 'http://localhost:8080/search?q=%27%20OR%201%3D1'
+#   -> HTTP/1.1 403  +  X-Kawach-Action: block          (SQLi blocked)
+for i in $(seq 1 6); do curl -s -o /dev/null -w '%{http_code} ' \
+  -H 'Host: app.acme.com' 'http://localhost:8080/search?q=hi'; done; echo
+#   -> 403 403 403 403 403 429                           (rate-limited on the 6th)
+```
+
+Edit `acls.json` while it runs — rules and rate limits hot-swap within ~2s, no
+restart. Point elsewhere with `KAWACH_ACL_FILE=/path/to/acls.json`.
+
+**Control plane** — the React dashboard:
+
+```bash
+git clone https://github.com/kawach-security/kawach-control && cd kawach-control/web
+npm install && npm run dev      # http://localhost:5173
+```
+
+> The dashboard currently runs against a mock API mirroring the `kawach-proto`
+> contracts; the backend API lands in a later phase.
+
 ## Repositories
 
 | Repo | Description |
