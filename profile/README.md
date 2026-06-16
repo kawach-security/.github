@@ -93,6 +93,18 @@ npm install && npm run dev      # http://localhost:5173
 > The dashboard currently runs against a mock API mirroring the `kawach-proto`
 > contracts; the backend API lands in a later phase.
 
+**On Kubernetes** — Docker images + a configurable Helm chart ([`kawach-infra`](https://github.com/kawach-security/kawach-infra)):
+
+```bash
+helm install kawach ./charts/kawach          # gateway + dashboard + bundled Redis
+helm install kawach ./charts/kawach \        # tune anything via values
+  --set dataplane.autoscaling.enabled=true \
+  --set redis.deploy=false --set redis.url=redis://my-redis:6379
+```
+
+Replicas/HPA, service type, ingress, eBPF privileges, the Redis rate-limit tier,
+and the WAF/rate-limit rules (a hot-reloaded ConfigMap) are all configurable.
+
 ## Repositories
 
 | Repo | Description |
